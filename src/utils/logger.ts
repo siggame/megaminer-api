@@ -8,8 +8,7 @@ export const logger: Logger = createLogger({
       handleExceptions: true
     })
   ],
-  exitOnError: false,
-  format: format.combine(format.json(), format.prettyPrint())
+  exitOnError: false
 });
 
 // Output stream used by morgan, the HTTP request logger

@@ -18,10 +18,9 @@ export const app: Express = express();
 const SQLiteStore = require('connect-sqlite3')(session);
 
 /* middleware */
-app.use(morgan("tiny", {stream: stream as any})); // Use morgan 'tiny' format to log requests
+app.use(morgan("tiny", { stream: stream as any })); // Use morgan 'tiny' format to log requests
 app.use(bodyParser.json()); // Parse JSON in the body of requests
 app.use(compression()); // Compress responses
-
 
 // Handle session information
 app.use(session({

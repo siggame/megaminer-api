@@ -1,6 +1,6 @@
 import { SwaggerOptions } from 'swagger-ui-express';
 import { projectPackage } from '../utils/package'
-import {logger} from '../utils/logger';
+import { logger } from '../utils/logger';
 
 export class SwaggerSetup {
   private swagger: SwaggerOptions;
@@ -28,7 +28,7 @@ export class SwaggerSetup {
   }
 
   addRouteToSwaggerDoc(route: string, method: string, routeInfo: RouteInfo) {
-    logger.debug(`Adding route to swagger doc: ${method} ${route}`);
+    logger.debug(`Adding dynamic route to swagger doc: ${method} ${route}`);
 
     if (!this.swagger.paths[route]) {
       this.swagger.paths[route] = {};
@@ -38,7 +38,7 @@ export class SwaggerSetup {
   }
 }
 
-interface SwaggerParameter{
+interface SwaggerParameter {
   name: string;
   in: string;
   required: boolean;
@@ -63,11 +63,11 @@ export class RouteInfo{
 
 export const swaggerSetup = new SwaggerSetup();
 
-const generateRouteInfo: RouteInfo = {
-  "x-swagger-router-controller": 'GenerateProject',
-  "operationId": "generate",
-  "tags": ["Template"],
-  "description": "Generate a project using a template.",
+const testRouteInfo: RouteInfo = {
+  "x-swagger-router-controller": 'TestRoute',
+  "operationId": "test",
+  "tags": ["TestSection"],
+  "description": "This is a test route.",
   "parameters": [
     {
       "name": "body",
@@ -79,4 +79,4 @@ const generateRouteInfo: RouteInfo = {
 };
 
 // note - must be lowercase method name
-// swaggerSetup.addRouteToSwaggerDoc("/blah", "post", generateRouteInfo);
+swaggerSetup.addRouteToSwaggerDoc("/test", "post", testRouteInfo);
