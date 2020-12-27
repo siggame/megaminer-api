@@ -1,6 +1,10 @@
+import { connect } from 'mongoose'
+
 import { properties } from './utils/configs';
 import { logger } from './utils/logger';
 import { app } from './routes/index';
+
+await connect(properties.database.mongoUri)
 
 // Tell our app to listen on our configured port
 const server = app.listen(properties.server.port);

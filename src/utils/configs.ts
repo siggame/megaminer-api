@@ -1,15 +1,16 @@
-const configsPath = '../../configs'
+const configsPath = '../../configs';
 
 /**
  * Properties stores data from the application config files.
  */
 class Properties{
-  externalServices: any;
-  logging: any;
   server: any;
+  database: any;
+  externalServices: any;
 
   constructor() {
     this.server = require(`${configsPath}/serverConfig.json`);
+    this.database = require(`${configsPath}/databaseConfig.json`);
   }
 }
 
