@@ -5,11 +5,13 @@ import * as compression from 'compression';
 import * as morgan from 'morgan';
 import * as cors from 'cors';
 import * as swaggerUi from 'swagger-ui-express';
+import * as restify from 'express-restify-mongoose';
 import * as path from "path";
 import * as fs from "fs"
-import { Express, Request, Response } from 'express';
+import { Express, Request, Response, Router } from 'express';
+
 import { stream } from '../utils/logger';
-import { properties } from '../utils/configs';
+import { properties } from '../utils/properties';
 import { swaggerSetup } from '../services/swaggerService'
 import { authenticate } from '../middlewares/auth';
 import { handleErrors } from '../middlewares/errorHandler';
@@ -70,6 +72,19 @@ fs.readdirSync(__dirname).filter((file: string) => {
   const route = require(path.join(__dirname, file)).router;
   const name = file.split('-router')[0];
   app.use('/' + name, route);
+});
+
+// Add dynamic model CRUD routes from models/{name}.ts
+const modelsDir = __dirname.replace('routes', 'models');
+fs.readdirSync(modelsDir).forEach((file: string) => {
+  const model = require(path.join(modelsDir, file));
+  const modelName = model.name.charAt(0).toUpperCase() + model.name.slice(1);
+  const router = Router();
+  restify.serve(router, model[modelName], model.restifyOptions);
+  console.log(router)
+  app.use(router);
+  swaggerSetup.addDefinitionToSwaggerDoc(modelName, model)
+  swaggerSetup.addCrudModelToSwaggerDoc(`/${model.name}`, modelName);
 });
 
 // Called if none of the above paths are hit (404)

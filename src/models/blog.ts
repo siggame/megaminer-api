@@ -1,4 +1,5 @@
 import { Schema, Document, model } from 'mongoose';
+import { logger } from '../utils/logger';
 
 export interface BlogInterface extends Document {
   title: String,
@@ -41,4 +42,14 @@ export const BlogSchema = new Schema({
   }
 });
 
-export const Blog = model<BlogInterface>('blogs', BlogSchema);
+export const name = 'blog';
+
+export const Blog = model<BlogInterface>(name, BlogSchema);
+
+export const restifyOptions  = {
+  prefix: '',
+  version: '',
+  postCreate: async (req, res, next) => {
+    logger.info(`Created a new blog post: ${req.body.title}`);
+  }
+};

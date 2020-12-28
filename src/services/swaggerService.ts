@@ -36,6 +36,144 @@ export class SwaggerSetup {
 
     this.swagger.paths[route][method] = routeInfo;
   }
+
+  addDefinitionToSwaggerDoc(name: string, definition: any) {
+    this.swagger.definitions[name] = definition;
+  }
+
+  addCrudModelToSwaggerDoc(path: string, model: string) {
+    // GET LIST
+    const getRouteInfo: RouteInfo = {
+      "x-swagger-router-controller": model,
+      "operationId": "list",
+      "tags": [model],
+      "description": `List all ${model}s.`,
+      "parameters":[
+        {
+          "name": "limit",
+          "description": "Limit the results coming back.",
+          "type": "integer",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "skip",
+          "description": "Sets the starting position of the results coming back. Used in conjunction with limit allows for pagination",
+          "type": "integer",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "sort",
+          "description": "Sort the data returned. Examples: sort=name [asc order] or sort=-name [desc order]",
+          "type": "string",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "query",
+          "description": "Allows you to filter data. Supports all operators ($regex, $gt, $gte, $lt, $lte, $ne, etc.) as well as shorthands: ~, >, >=, <, <=, !=. Ex: {\"name\":\"Bob\"} or {\"name\":{\"$regex\":\"^(Bob)\"}}",
+          "type": "string",
+          "in": "query",
+          "required": false
+        }
+      ],
+      "responses": {}
+    };
+
+    this.addRouteToSwaggerDoc(path, 'get', getRouteInfo);
+
+    // POST CREATE
+    const postRouteInfo: RouteInfo = {
+      "x-swagger-router-controller": model,
+      "operationId": "create",
+      "tags": [model],
+      "description": `Create a new ${model}.`,
+      "parameters": [
+        {
+          "name": "body",
+          "description": "",
+          "schema": {
+            "$ref": "#/definitions/" + model
+          },
+          "in": "body",
+          "required": true
+        }
+      ],
+      "responses": {}
+    };
+
+    this.addRouteToSwaggerDoc(path, 'post', postRouteInfo);
+
+    // GET ID
+    let getIdRouteInfo: RouteInfo = {
+      "x-swagger-router-controller": model,
+      "operationId": "get",
+      "tags": [model],
+      "description": `Get a single ${model} by ID.`,
+      "parameters":[
+        {
+          "name": "id",
+          "description": `The ID of the ${model}.`,
+          "type": "string",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "responses": {}
+    };
+
+    this.addRouteToSwaggerDoc(`${path}/{id}`, 'get', getIdRouteInfo);
+
+    // PUT UPDATE
+    let putRouteInfo: RouteInfo = {
+      "x-swagger-router-controller": model,
+      "operationId": "update",
+      "tags": [model],
+      "description": `Update a single ${model} by ID.`,
+      "parameters":[
+        {
+          "name": "id",
+          "description": `The ID of the ${model} to update.`,
+          "type": "string",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "body",
+          "description": `The updated values of the ${model}.`,
+          "schema": {
+            "$ref": "#/definitions/" + model
+          },
+          "in": "body",
+          "required": true
+        }
+      ],
+      "responses": {}
+    };
+
+    this.addRouteToSwaggerDoc(`${path}/{id}`, 'put', putRouteInfo);
+
+    // DELETE
+    let deleteRouteInfo: RouteInfo = {
+      "x-swagger-router-controller": model,
+      "operationId": "delete",
+      "tags": [model],
+      "description": `Delete a single ${model} by ID.`,
+      "parameters":[
+        {
+          "name": "id",
+          "description": `The ID of the ${model} to delete.`,
+          "type": "string",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "responses": {}
+    };
+
+    this.addRouteToSwaggerDoc(`${path}/{id}`, 'delete', deleteRouteInfo);
+  }
 }
 
 interface SwaggerParameter {
@@ -62,21 +200,3 @@ export class RouteInfo{
 }
 
 export const swaggerSetup = new SwaggerSetup();
-
-const testRouteInfo: RouteInfo = {
-  "x-swagger-router-controller": 'TestRoute',
-  "operationId": "test",
-  "tags": ["TestSection"],
-  "description": "This is a test route.",
-  "parameters": [
-    {
-      "name": "body",
-      "in": "body",
-      "required": true
-    }
-  ],
-  "responses": {}
-};
-
-// note - must be lowercase method name
-swaggerSetup.addRouteToSwaggerDoc("/test", "post", testRouteInfo);

@@ -1,6 +1,7 @@
 import { Schema, Document, ObjectId, model} from 'mongoose';
 import { BadgeInterface, BadgeSchema } from './badge';
 import { NotificationInterface } from './notification';
+import { logger } from '../utils/logger';
 
 // Create an interface for our User model
 // Notifications are an array of Mongo IDs
@@ -75,4 +76,14 @@ UserSchema.virtual('id').get(function() {
   return this._id.toString();
 });
 
-export const User = model<UserInterface>('users', UserSchema);
+export const name = 'user';
+
+export const User = model<UserInterface>(name, UserSchema);
+
+export const restifyOptions  = {
+  prefix: '',
+  version: '',
+  postCreate: async (req, res, next) => {
+    logger.info(`Created a new user: ${req.body.username}`);
+  }
+};

@@ -21,4 +21,11 @@ export const BadgeSchema = new Schema({
   }
 });
 
-export const Badge = model<BadgeInterface>('badges', BadgeSchema);
+export const name = 'badge';
+
+export const Badge = model<BadgeInterface>(name, BadgeSchema);
+
+export const restifyOptions  = {
+  prefix: '',
+  version: ''
+};

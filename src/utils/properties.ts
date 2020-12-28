@@ -6,7 +6,6 @@ const configsPath = '../../configs';
 class Properties{
   server: any;
   database: any;
-  externalServices: any;
 
   constructor() {
     this.server = require(`${configsPath}/serverConfig.json`);

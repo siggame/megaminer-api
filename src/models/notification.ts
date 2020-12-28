@@ -20,4 +20,14 @@ export const NotificationSchema = new Schema({
   }
 });
 
-export const Notification = model<NotificationInterface>('notifications', NotificationSchema);
+export const name = 'notification';
+
+export const Notification = model<NotificationInterface>(name, NotificationSchema);
+
+export const restifyOptions  = {
+  prefix: '',
+  version: '',
+  postCreate: async (req, res, next) => {
+    // Notify
+  }
+};
