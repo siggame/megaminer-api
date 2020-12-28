@@ -1,15 +1,18 @@
 import { Schema, Document, model } from 'mongoose';
 
+export const name = 'Badge';
+
 export interface BadgeInterface extends Document {
-  title: String,
-  level: Number,
-  icon: String
+  title: string,
+  level: number,
+  icon: string
 };
 
 export const BadgeSchema = new Schema({
   title: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   level: {
     type: Number,
@@ -21,11 +24,10 @@ export const BadgeSchema = new Schema({
   }
 });
 
-export const name = 'badge';
-
 export const Badge = model<BadgeInterface>(name, BadgeSchema);
 
-export const restifyOptions  = {
+export const restifyOptions = {
   prefix: '',
-  version: ''
+  version: '',
+  name: name + 's'
 };

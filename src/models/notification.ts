@@ -1,5 +1,7 @@
 import { Schema, Document, model } from 'mongoose';
 
+export const name = 'Notification';
+
 export interface NotificationInterface extends Document {
   type: string, // invite, announcement, submission status, etc.
   title: string, // what the notification actually says
@@ -20,14 +22,14 @@ export const NotificationSchema = new Schema({
   }
 });
 
-export const name = 'notification';
-
 export const Notification = model<NotificationInterface>(name, NotificationSchema);
 
 export const restifyOptions  = {
   prefix: '',
   version: '',
+  name: name + 's',
   postCreate: async (req, res, next) => {
-    // Notify
+    // Notify the user
+    next();
   }
 };

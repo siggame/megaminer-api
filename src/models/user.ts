@@ -1,7 +1,10 @@
 import { Schema, Document, ObjectId, model} from 'mongoose';
+
 import { BadgeInterface, BadgeSchema } from './badge';
 import { NotificationInterface } from './notification';
 import { logger } from '../utils/logger';
+
+export const name = 'User';
 
 // Create an interface for our User model
 // Notifications are an array of Mongo IDs
@@ -24,7 +27,8 @@ export interface UserInterface extends Document {
 const UserSchema = new Schema({
   username: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   full_name: {
     type: String,
@@ -32,7 +36,8 @@ const UserSchema = new Schema({
   },
   email: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   password: {
     type: String,
@@ -62,10 +67,10 @@ const UserSchema = new Schema({
     type: String,
     required: false
   },
-  badges: {
-    type: [BadgeSchema],
-    required: true
-  }
+  // badges: {
+  //   type: [BadgeSchema],
+  //   required: true
+  // }
 });
 
 UserSchema.set('toJSON', {
@@ -76,14 +81,25 @@ UserSchema.virtual('id').get(function() {
   return this._id.toString();
 });
 
-export const name = 'user';
-
 export const User = model<UserInterface>(name, UserSchema);
 
 export const restifyOptions  = {
   prefix: '',
   version: '',
+  name: name + 's',
+  preCreate: async (req, res, next) => {
+    next();
+  },
   postCreate: async (req, res, next) => {
     logger.info(`Created a new user: ${req.body.username}`);
+    next();
+  },
+  postRead: async (req, res, next) => {
+    req.erm.result.map((user) => {
+      delete user.hash_iterations;
+      delete user.password;
+      delete user.salt;
+    });
+    next();
   }
 };

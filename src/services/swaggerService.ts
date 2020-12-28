@@ -28,8 +28,6 @@ export class SwaggerSetup {
   }
 
   addRouteToSwaggerDoc(route: string, method: string, routeInfo: RouteInfo) {
-    logger.debug(`Adding dynamic route to swagger doc: ${method} ${route}`);
-
     if (!this.swagger.paths[route]) {
       this.swagger.paths[route] = {};
     }
@@ -37,8 +35,15 @@ export class SwaggerSetup {
     this.swagger.paths[route][method] = routeInfo;
   }
 
+  cleanDefinition(definition: any) {
+    delete definition.properties['_id'];
+    delete definition.properties['__v'];
+
+    return definition;
+  }
+
   addDefinitionToSwaggerDoc(name: string, definition: any) {
-    this.swagger.definitions[name] = definition;
+    this.swagger.definitions[name] = this.cleanDefinition(definition);
   }
 
   addCrudModelToSwaggerDoc(path: string, model: string) {
@@ -78,7 +83,11 @@ export class SwaggerSetup {
           "required": false
         }
       ],
-      "responses": {}
+      "responses": {
+        "200": {
+          "description": `Successfully retrieved ${model} documents.`
+        }
+      }
     };
 
     this.addRouteToSwaggerDoc(path, 'get', getRouteInfo);
@@ -100,7 +109,11 @@ export class SwaggerSetup {
           "required": true
         }
       ],
-      "responses": {}
+      "responses": {
+        "201": {
+          "description": `Successfully created a ${model}.`
+        }
+      }
     };
 
     this.addRouteToSwaggerDoc(path, 'post', postRouteInfo);
@@ -120,7 +133,11 @@ export class SwaggerSetup {
           "required": true
         }
       ],
-      "responses": {}
+      "responses": {
+        "200": {
+          "description": `Successfully retrieved a ${model}.`
+        }
+      }
     };
 
     this.addRouteToSwaggerDoc(`${path}/{id}`, 'get', getIdRouteInfo);
@@ -149,7 +166,11 @@ export class SwaggerSetup {
           "required": true
         }
       ],
-      "responses": {}
+      "responses": {
+        "201": {
+          "description": `Successfully updated a ${model}.`
+        }
+      }
     };
 
     this.addRouteToSwaggerDoc(`${path}/{id}`, 'put', putRouteInfo);
@@ -169,7 +190,11 @@ export class SwaggerSetup {
           "required": true
         }
       ],
-      "responses": {}
+      "responses": {
+        "201": {
+          "description": `Successfully deleted the ${model}.`
+        }
+      }
     };
 
     this.addRouteToSwaggerDoc(`${path}/{id}`, 'delete', deleteRouteInfo);

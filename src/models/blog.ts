@@ -1,14 +1,17 @@
 import { Schema, Document, model } from 'mongoose';
+
 import { logger } from '../utils/logger';
 
+export const name = 'Blog';
+
 export interface BlogInterface extends Document {
-  title: String,
-  type: String,
-  authors: [{ username: String, full_name: String }],
+  title: string,
+  type: string,
+  authors: [{ username: string, full_name: string }],
   created_at: Date,
   updated_at: Date,
-  thumbnail: String,
-  content: String
+  thumbnail: string,
+  content: string
 };
 
 export const BlogSchema = new Schema({
@@ -42,14 +45,14 @@ export const BlogSchema = new Schema({
   }
 });
 
-export const name = 'blog';
-
 export const Blog = model<BlogInterface>(name, BlogSchema);
 
 export const restifyOptions  = {
   prefix: '',
   version: '',
+  name: name + 's',
   postCreate: async (req, res, next) => {
     logger.info(`Created a new blog post: ${req.body.title}`);
+    next();
   }
 };

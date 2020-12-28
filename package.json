@@ -31,6 +31,7 @@
     "express-restify-mongoose": "^6.1.2",
     "express-session": "^1.17.1",
     "mongoose": "^5.11.8",
+    "mongoose-to-swagger": "^1.1.1",
     "morgan": "^1.10.0",
     "swagger-ui-express": "^4.1.5",
     "winston": "^3.3.3"

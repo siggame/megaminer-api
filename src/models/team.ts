@@ -1,6 +1,9 @@
 import { Schema, Document, ObjectId, model } from 'mongoose';
+
 import { NotificationSchema } from './notification';
 import { logger } from '../utils/logger';
+
+export const name = 'Team';
 
 export interface TeamInterface extends Document {
   name: String,
@@ -32,22 +35,27 @@ export const TeamSchema = new Schema({
   },
   owner: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   members: {
     type: [String],
     required: true
-  }
+  },
+  // active_invites: {
+  //   type: [NotificationSchema['_id']],
+  //   required: true
+  // }
 });
-
-export const name = 'team';
 
 export const Team = model<TeamInterface>(name, TeamSchema);
 
 export const restifyOptions  = {
   prefix: '',
   version: '',
+  name: name + 's',
   postCreate: async (req, res, next) => {
     logger.info(`Created a new team: ${req.body.name}`);
+    next();
   }
 };
