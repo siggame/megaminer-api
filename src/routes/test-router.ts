@@ -8,6 +8,8 @@ router.post('/', async (_req: Request, res: Response, _next: NextFunction) => {
   return res.status(200).send("Hello world!");
 });
 
+export { router };
+
 const testRouteInfo: RouteInfo = {
   "x-swagger-router-controller": 'TestRoute',
   "operationId": "test",
