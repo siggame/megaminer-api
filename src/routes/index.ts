@@ -17,7 +17,6 @@ import { properties } from '../utils/properties';
 import { swaggerSetup } from '../services/swaggerService'
 import { authenticate } from '../middlewares/auth';
 import { handleErrors } from '../middlewares/errorHandler';
-import { restifyOptions } from '../models/badge';
 
 export const app: Express = express();
 const SQLiteStore = require('connect-sqlite3')(session);

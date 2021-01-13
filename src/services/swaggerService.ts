@@ -28,11 +28,12 @@ export class SwaggerSetup {
   }
 
   addRouteToSwaggerDoc(route: string, method: string, routeInfo: RouteInfo) {
+    const _method = method.toLowerCase();
     if (!this.swagger.paths[route]) {
       this.swagger.paths[route] = {};
     }
 
-    this.swagger.paths[route][method] = routeInfo;
+    this.swagger.paths[route][_method] = routeInfo;
   }
 
   cleanDefinition(definition: any) {
