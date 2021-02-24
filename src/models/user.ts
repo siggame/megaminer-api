@@ -1,3 +1,6 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable func-names */
+
 import { Schema, Document, model } from "mongoose";
 
 import { logger } from "../utils/logger";
