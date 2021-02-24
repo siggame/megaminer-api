@@ -1,8 +1,14 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable func-names */
 
 import { Schema, Document, model } from "mongoose";
-
+import { validate } from "email-validator";
+import {
+  getHashedPassword,
+  getRandomSalt,
+  cleanUserData,
+} from "../services/passwordService";
 import { logger } from "../utils/logger";
 
 export const name = "User";
@@ -13,8 +19,7 @@ export interface UserInterface extends Document {
   full_name: string;
   email: string;
   password: string;
-  salt: string; // The random bytes added to their password before hashing
-  hash_iterations: number; // The number of times their password is hashed
+  salt: string; // The salt used during password hashing
   created_at: Date; // When this user was created
   updated_at: Date; // The last time this user was updated
   is_admin: boolean; // Whether this is an administrator (on a need basis)
@@ -48,17 +53,13 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
-  hash_iterations: {
-    type: Number,
-    required: true,
-  },
   created_at: {
     type: Date,
-    required: true,
+    default: Date.now(),
   },
   updated_at: {
     type: Date,
-    required: true,
+    default: Date.now(),
   },
   is_admin: {
     type: Boolean,
@@ -82,33 +83,48 @@ const UserSchema = new Schema({
   },
 });
 
-UserSchema.set("toJSON", {
-  virtuals: true,
-});
-
+// Add a "virtual" property, which just adds a shortcut to the _id model property
 UserSchema.virtual("id").get(function () {
   return this._id.toString();
 });
 
+// Validate email syntax
+UserSchema.path("email").validate((email: string) => validate(email));
+
 export const User = model<UserInterface>(name, UserSchema);
 
+// Add a ton of hooks
 export const restifyOptions = {
   prefix: "",
   version: "",
   name: `${name}s`,
   preCreate: async (req, res, next) => {
+    // Validate and finish populating newly created users
+    req.body.salt = await getRandomSalt();
+    req.body.password = await getHashedPassword(
+      req.body.password,
+      req.body.salt
+    );
+
     next();
   },
   postCreate: async (req, res, next) => {
     logger.info(`Created a new user: ${req.body.username}`);
+    req.erm.result = cleanUserData(req.erm.result);
     next();
   },
   postRead: async (req, res, next) => {
-    req.erm.result.map((user) => {
-      delete user.hash_iterations;
-      delete user.password;
-      delete user.salt;
-    });
+    const result = req.erm.result;
+
+    // After fetching user information, remove password information
+    if (Array.isArray(result)) {
+      // If we are listing users, remove each user's password info
+      req.erm.result = result.map((user) => cleanUserData(user));
+    } else {
+      // If we are fetching a single user, remove their password info
+      req.erm.result = cleanUserData(req.erm.result);
+    }
+
     next();
   },
 };
