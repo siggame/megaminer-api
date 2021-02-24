@@ -63,7 +63,7 @@ const UserSchema = new Schema({
   },
   is_admin: {
     type: Boolean,
-    required: true,
+    default: false,
   },
   mmai_team: {
     type: String,
