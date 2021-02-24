@@ -5,11 +5,15 @@ import * as compression from 'compression';
 import * as morgan from 'morgan';
 import * as cors from 'cors';
 import * as swaggerUi from 'swagger-ui-express';
-import * as path from "path";
-import * as fs from "fs"
-import { Express, Request, Response } from 'express';
+import * as restify from 'express-restify-mongoose';
+import * as path from 'path';
+import * as fs from 'fs';
+import * as m2s from 'mongoose-to-swagger';
+
+import { Express, Request, Response, Router } from 'express';
+
 import { stream } from '../utils/logger';
-import { properties } from '../utils/configs';
+import { properties } from '../utils/properties';
 import { swaggerSetup } from '../services/swaggerService'
 import { authenticate } from '../middlewares/auth';
 import { handleErrors } from '../middlewares/errorHandler';
@@ -63,13 +67,30 @@ app.get('/swagger', function(_req: Request, res: Response) {
 // Placed after swagger routes so we don't need to auth for those
 app.use(authenticate);
 
-// Add dynamic routes from routes/{name}-router.ts as "/{name}"
-fs.readdirSync(__dirname).filter((file: string) => {
-  return file.indexOf("-router") !== -1;
-}).forEach((file: string) => {
-  const route = require(path.join(__dirname, file)).router;
-  const name = file.split('-router')[0];
-  app.use('/' + name, route);
+// Add custom routes from routes/{name}-router.ts as "/{name}"
+fs.readdirSync(__dirname).forEach((file: string) => {
+  if (file.indexOf("-router") !== -1) {
+    const router = require(path.join(__dirname, file)).router;
+    const name = file.split('-router')[0];
+    app.use(`/${name}`, router);
+  }
+});
+
+// Add model CRUD routes from models/{name}.ts
+const modelsDir = __dirname.replace('routes', 'models');
+fs.readdirSync(modelsDir).forEach((file: string) => {
+  const modelInfo = require(path.join(modelsDir, file));
+  const modelName = modelInfo.name;
+  const model = modelInfo[modelName];
+  const router = Router();
+
+  // Add routes to the router and application
+  restify.serve(router, model, modelInfo.restifyOptions);
+  app.use(router);
+
+  // Add routes and models to the Swagger page
+  swaggerSetup.addDefinitionToSwaggerDoc(modelName, m2s(model));
+  swaggerSetup.addCrudModelToSwaggerDoc(`/${modelInfo.restifyOptions.name}`, modelName);
 });
 
 // Called if none of the above paths are hit (404)

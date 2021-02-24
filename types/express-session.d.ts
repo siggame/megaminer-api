@@ -1,6 +1,4 @@
-import { UserInfo } from "./userInfo";
-
-export {};
+import { UserInfo } from './userInfo';
 
 declare module 'express-session' {
   interface SessionData {

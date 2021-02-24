@@ -1,17 +1,10 @@
 {
-  "compileOnSave": false,
   "compilerOptions": {
     "moduleResolution": "node",
-    "target": "es2017",
-    "sourceMap": true,
-    "allowJs": true,
     "module": "commonjs",
-    "types": ["node"],
-    "typeRoots": [ "node_modules/@types"],
-    "lib": ["es2017"]
+    "target": "esnext",
+    "allowJs": true,
+    "strictNullChecks": false
   },
-  "exclude": [
-    "release",
-    "gulpfile.js"
-  ]
+  "exclude": ["release", "gulpfile.js"]
 }

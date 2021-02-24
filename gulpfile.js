@@ -9,7 +9,6 @@
 
 const gulp = require('gulp');
 const ts = require('gulp-typescript');
-const merge = require('merge2');
 const clean = require('gulp-clean');
 
 const spawn = require('child_process').spawn;
@@ -28,6 +27,7 @@ function cleanTask() {
 
 /**
  * Compile TypeScript source code using type declarations.
+ * Turns it into ES5 JavaScript code and uglifies it.
  */
 function compileTask() {
   const tsResult = gulp.src([
@@ -37,9 +37,7 @@ function compileTask() {
   ]).pipe(tsProject());
 
   // Merge output streams if necessary
-  return merge([
-    tsResult.js.pipe(gulp.dest('./release'))
-  ]);
+  return tsResult.js.pipe(gulp.dest('./release'));
 }
 
 /**
