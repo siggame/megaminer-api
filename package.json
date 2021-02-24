@@ -4,11 +4,18 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "lint": "eslint src/**",
+    "lint:fix": "npm run lint -- --fix",
+    "prettier": "prettier ./src --check",
+    "prettier:fix": "prettier ./src --write",
+    "test": "npm run lint",
+    "test:fix": "npm run lint:fix",
+    "fix": "npm run test:fix",
     "clean": "gulp clean",
     "compile": "gulp compile",
+    "watch": "gulp watch",
     "serve": "gulp watch",
-    "start": "gulp watch",
-    "watch": "gulp watch"
+    "start": "node release/server.js"
   },
   "repository": {
     "type": "git",
@@ -21,8 +28,13 @@
     "url": "https://github.com/siggame/mmai-api/issues"
   },
   "homepage": "https://github.com/siggame/mmai-api#readme",
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test"
+    }
+  },
   "dependencies": {
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
     "connect-sqlite3": "^0.9.11",
@@ -47,9 +59,18 @@
     "@types/morgan": "^1.9.2",
     "@types/node": "^13.13.1",
     "@types/swagger-ui-express": "^4.1.2",
+    "@typescript-eslint/eslint-plugin": "^4.15.2",
+    "@typescript-eslint/parser": "^4.15.2",
+    "eslint": "^7.16.0",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-config-prettier": "^7.1.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.3.1",
     "gulp": "^4.0.2",
     "gulp-clean": "^0.4.0",
     "gulp-typescript": "^6.0.0-alpha.1",
+    "husky": "^5.1.1",
+    "prettier": "^2.2.1",
     "typescript": "^4.1.2"
   }
 }

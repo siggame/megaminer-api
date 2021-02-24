@@ -1,46 +1,46 @@
-import { Schema, Document, ObjectId, model } from 'mongoose';
+import { Schema, Document, ObjectId, model } from "mongoose";
 
-import { NotificationSchema } from './notification';
-import { logger } from '../utils/logger';
+import { NotificationSchema } from "./notification";
+import { logger } from "../utils/logger";
 
-export const name = 'Team';
+export const name = "Team";
 
 export interface TeamInterface extends Document {
-  name: String,
-  tournament_number: Number,
-  is_paid: Boolean,
-  is_eligible: Boolean,
-  owner: String,
-  members: [String],
-  active_invites: [ObjectId]
-};
+  name: String;
+  tournament_number: Number;
+  is_paid: Boolean;
+  is_eligible: Boolean;
+  owner: String;
+  members: [String];
+  active_invites: [ObjectId];
+}
 
 export const TeamSchema = new Schema({
   name: {
     type: String,
     unique: true,
-    required: true
+    required: true,
   },
   tournament_number: {
     type: Number,
-    required: true
+    required: true,
   },
   is_paid: {
     type: Boolean,
-    required: true
+    required: true,
   },
   is_eligible: {
     type: Boolean,
-    required: true
+    required: true,
   },
   owner: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   members: {
     type: [String],
-    required: true
+    required: true,
   },
   // active_invites: {
   //   type: [NotificationSchema['_id']],
@@ -50,12 +50,12 @@ export const TeamSchema = new Schema({
 
 export const Team = model<TeamInterface>(name, TeamSchema);
 
-export const restifyOptions  = {
-  prefix: '',
-  version: '',
-  name: name + 's',
+export const restifyOptions = {
+  prefix: "",
+  version: "",
+  name: `${name}s`,
   postCreate: async (req, res, next) => {
     logger.info(`Created a new team: ${req.body.name}`);
     next();
-  }
+  },
 };
