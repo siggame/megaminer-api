@@ -1,35 +1,38 @@
-import { Schema, Document, model } from 'mongoose';
+import { Schema, Document, model } from "mongoose";
 
-export const name = 'Notification';
+export const name = "Notification";
 
 export interface NotificationInterface extends Document {
-  type: string, // invite, announcement, submission status, etc.
-  title: string, // what the notification actually says
-  link: string // where you are routed on clicking the notification
-};
+  type: string; // invite, announcement, submission status, etc.
+  title: string; // what the notification actually says
+  link: string; // where you are routed on clicking the notification
+}
 
 export const NotificationSchema = new Schema({
   type: {
     type: String,
-    required: true
+    required: true,
   },
   title: {
     type: String,
     requireD: true,
   },
   link: {
-    type: String
-  }
+    type: String,
+  },
 });
 
-export const Notification = model<NotificationInterface>(name, NotificationSchema);
+export const Notification = model<NotificationInterface>(
+  name,
+  NotificationSchema
+);
 
-export const restifyOptions  = {
-  prefix: '',
-  version: '',
-  name: name + 's',
+export const restifyOptions = {
+  prefix: "",
+  version: "",
+  name: `${name}s`,
   postCreate: async (req, res, next) => {
     // Notify the user
     next();
-  }
+  },
 };

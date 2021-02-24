@@ -1,10 +1,11 @@
-const configsPath = '../../configs';
+const configsPath = "../../configs";
 
 /**
  * Properties stores data from the application config files.
  */
-class Properties{
+class Properties {
   server: any;
+
   database: any;
 
   constructor() {

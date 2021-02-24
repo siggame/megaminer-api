@@ -1,3 +1,3 @@
-const packageFile = '../../package.json';
+const packageFile = "../../package.json";
 
 export const projectPackage = require(packageFile);

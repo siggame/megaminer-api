@@ -1,58 +1,58 @@
-import { Schema, Document, model } from 'mongoose';
+import { Schema, Document, model } from "mongoose";
 
-import { logger } from '../utils/logger';
+import { logger } from "../utils/logger";
 
-export const name = 'Blog';
+export const name = "Blog";
 
 export interface BlogInterface extends Document {
-  title: string,
-  type: string,
-  authors: [{ username: string, full_name: string }],
-  created_at: Date,
-  updated_at: Date,
-  thumbnail: string,
-  content: string
-};
+  title: string;
+  type: string;
+  authors: [{ username: string; full_name: string }];
+  created_at: Date;
+  updated_at: Date;
+  thumbnail: string;
+  content: string;
+}
 
 export const BlogSchema = new Schema({
   title: {
     type: String,
-    required: true
+    required: true,
   },
   type: {
     type: String,
-    required: true
+    required: true,
   },
   authors: {
     type: [{ username: String, full_name: String }],
-    required: true
+    required: true,
   },
   created_at: {
     type: Date,
-    required: true
+    required: true,
   },
   updated_at: {
     type: Date,
-    required: true
+    required: true,
   },
   thumbnail: {
     type: String,
-    required: true
+    required: true,
   },
   content: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 export const Blog = model<BlogInterface>(name, BlogSchema);
 
-export const restifyOptions  = {
-  prefix: '',
-  version: '',
-  name: name + 's',
+export const restifyOptions = {
+  prefix: "",
+  version: "",
+  name: `${name}s`,
   postCreate: async (req, res, next) => {
     logger.info(`Created a new blog post: ${req.body.title}`);
     next();
-  }
+  },
 };

@@ -1,14 +1,14 @@
-import { transports, Logger, createLogger, format } from 'winston';
+import { transports, Logger, createLogger, format } from "winston";
 
 // Create a new logger for the application using the config properties
 export const logger: Logger = createLogger({
   transports: [
     new transports.Console({
       level: "debug",
-      handleExceptions: true
-    })
+      handleExceptions: true,
+    }),
   ],
-  exitOnError: false
+  exitOnError: false,
 });
 
 // Output stream used by morgan, the HTTP request logger
@@ -16,5 +16,5 @@ export const logger: Logger = createLogger({
 export const stream = {
   write: (message: string, _encoding: string): void => {
     logger.info(message);
-  }
+  },
 };
