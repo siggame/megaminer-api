@@ -9,10 +9,7 @@
 
 const gulp = require('gulp');
 const ts = require('gulp-typescript');
-const merge = require('merge2');
 const clean = require('gulp-clean');
-const uglify = require('gulp-uglify');
-const babel = require('gulp-babel');
 
 const spawn = require('child_process').spawn;
 const tsProject = ts.createProject('tsconfig.json');
@@ -40,12 +37,7 @@ function compileTask() {
   ]).pipe(tsProject());
 
   // Merge output streams if necessary
-  return merge([
-    tsResult.js
-      .pipe(babel({ presets: ['@babel/env'] }))
-      .pipe(uglify())
-      .pipe(gulp.dest('./release'))
-  ]);
+  return tsResult.js.pipe(gulp.dest('./release'));
 }
 
 /**
