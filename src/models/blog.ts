@@ -1,3 +1,6 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable func-names */
+
 import { Schema, Document, model } from "mongoose";
 
 import { logger } from "../utils/logger";
@@ -43,6 +46,11 @@ export const BlogSchema = new Schema({
     type: String,
     required: true,
   },
+});
+
+// Add a "virtual" property, which just adds a shortcut to the _id model property
+BlogSchema.virtual("id").get(function () {
+  return this._id.toString();
 });
 
 export const Blog = model<BlogInterface>(name, BlogSchema);

@@ -1,4 +1,7 @@
-import { Schema, Document, ObjectId, model } from "mongoose";
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable func-names */
+
+import { Schema, Document, model } from "mongoose";
 
 import { logger } from "../utils/logger";
 
@@ -51,6 +54,11 @@ export const TeamSchema = new Schema({
     type: Date,
     default: Date.now(),
   },
+});
+
+// Add a "virtual" property, which just adds a shortcut to the _id model property
+TeamSchema.virtual("id").get(function () {
+  return this._id.toString();
 });
 
 export const Team = model<TeamInterface>(name, TeamSchema);

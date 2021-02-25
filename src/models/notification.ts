@@ -1,11 +1,14 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable func-names */
+
 import { Schema, Document, model } from "mongoose";
 
 export const name = "Notification";
 
 export interface NotificationInterface extends Document {
   type: string; // invite, announcement, submission status, etc.
-  title: string; // what the notification actually says
-  link: string; // where you are routed on clicking the notification
+  title: string; // What the notification actually says
+  link: string; // Where you are routed on clicking the notification
 }
 
 export const NotificationSchema = new Schema({
@@ -15,11 +18,16 @@ export const NotificationSchema = new Schema({
   },
   title: {
     type: String,
-    requireD: true,
+    required: true,
   },
   link: {
     type: String,
   },
+});
+
+// Add a "virtual" property, which just adds a shortcut to the _id model property
+NotificationSchema.virtual("id").get(function () {
+  return this._id.toString();
 });
 
 export const Notification = model<NotificationInterface>(
