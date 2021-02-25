@@ -1,6 +1,8 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-param-reassign */
+
 import { SwaggerOptions } from "swagger-ui-express";
 import { projectPackage } from "../utils/package";
-import { logger } from "../utils/logger";
 
 export class SwaggerSetup {
   private swagger: SwaggerOptions;
@@ -36,7 +38,7 @@ export class SwaggerSetup {
     this.swagger.paths[route][_method] = routeInfo;
   }
 
-  cleanDefinition(definition: any) {
+  static cleanDefinition(definition: any) {
     delete definition.properties._id;
     delete definition.properties.__v;
 
@@ -44,7 +46,7 @@ export class SwaggerSetup {
   }
 
   addDefinitionToSwaggerDoc(name: string, definition: any) {
-    this.swagger.definitions[name] = this.cleanDefinition(definition);
+    this.swagger.definitions[name] = SwaggerSetup.cleanDefinition(definition);
   }
 
   addCrudModelToSwaggerDoc(path: string, model: string) {

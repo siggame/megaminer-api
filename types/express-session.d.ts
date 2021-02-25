@@ -1,7 +1,7 @@
-import { UserInfo } from './userInfo';
+import { UserInfo } from "./userInfo";
 
-declare module 'express-session' {
+declare module "express-session" {
   interface SessionData {
-    userInfo: UserInfo
+    userInfo: UserInfo;
   }
 }
