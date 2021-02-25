@@ -74,7 +74,7 @@ export const restifyOptions = {
       req.body.owner = req.session.userInfo.id;
     }
 
-    // Admins cannot specify members directly
+    // Admins cannot specify members directly during creation
     req.body.members = [req.body.owner];
     next();
   },
