@@ -1,14 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { logger } from "../utils/logger";
 import { getUserInfo } from "../services/userService";
-
-/**
- * Fetch user info and store it in the express-session.
- */
-async function setUserInfo(req: Request) {
-  const userInfo = await getUserInfo();
-  req.session.userInfo = userInfo;
-}
 
 /**
  * Authenticate any user trying to use the application.
@@ -22,7 +13,7 @@ export async function authenticate(
   if (!req.session.userInfo) {
     try {
       // Request user info and store it
-      await setUserInfo(req);
+      req.session.userInfo = await getUserInfo();
     } catch (err) {
       // Reject users who cannot be identified
       return next({
