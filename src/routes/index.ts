@@ -48,7 +48,7 @@ app.use(
 );
 
 // Regex pattern to match data needed load the swagger page
-const swaggerPattern = /^\/([^\/]+\.(html|css|js))?$/;
+const swaggerPattern = /^\/([^/]+\.(html|css|js))?$/;
 
 const swaggerUiOptions = {
   swaggerUrl: "/swagger",
