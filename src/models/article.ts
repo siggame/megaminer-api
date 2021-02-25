@@ -5,19 +5,19 @@ import { Schema, Document, model } from "mongoose";
 
 import { logger } from "../utils/logger";
 
-export const name = "Blog";
+export const name = "Article";
 
-export interface BlogInterface extends Document {
-  title: string;
-  type: string;
-  authors: [{ username: string; full_name: string }];
+export interface ArticleInterface extends Document {
+  title: string; // The title of the article
+  type: string; // The type of article this is
+  authors: [string]; // The user IDs of the authors
   created_at: Date;
   updated_at: Date;
-  thumbnail: string;
-  content: string;
+  thumbnail: string; // The path to the article's thumbnail image
+  content: string; // The content of the article
 }
 
-export const BlogSchema = new Schema({
+export const ArticleSchema = new Schema({
   title: {
     type: String,
     required: true,
@@ -27,7 +27,7 @@ export const BlogSchema = new Schema({
     required: true,
   },
   authors: {
-    type: [{ username: String, full_name: String }],
+    type: [String],
     required: true,
   },
   created_at: {
@@ -49,18 +49,18 @@ export const BlogSchema = new Schema({
 });
 
 // Add a "virtual" property, which just adds a shortcut to the _id model property
-BlogSchema.virtual("id").get(function () {
+ArticleSchema.virtual("id").get(function () {
   return this._id.toString();
 });
 
-export const Blog = model<BlogInterface>(name, BlogSchema);
+export const Article = model<ArticleInterface>(name, ArticleSchema);
 
 export const restifyOptions = {
   prefix: "",
   version: "",
   name: `${name}s`,
   postCreate: async (req, res, next) => {
-    logger.info(`Created a new blog post: ${req.body.title}`);
+    logger.info(`Created a new blog article: ${req.body.title}`);
     next();
   },
 };
