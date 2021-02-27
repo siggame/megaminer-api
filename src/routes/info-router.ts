@@ -27,8 +27,8 @@ router.get("/", getInfo);
 export { router };
 
 const infoRouteInfo: RouteInfo = {
-  "x-swagger-router-controller": "TestRoute",
-  operationId: "test",
+  "x-swagger-router-controller": "InfoRouter",
+  operationId: "info",
   tags: ["Info"],
   description: "Get application information.",
   parameters: [],
