@@ -26,7 +26,6 @@ export interface UserInterface extends Document {
   mmai_team: string; // This user's competition team, if any
   club_team: string; // This user's main club team, if any (internal developers)
   notifications: [string]; // An array of notification IDs
-  badges: [string]; // An array of badge IDs
 }
 
 // Set up the database schema for a User
@@ -74,10 +73,6 @@ const UserSchema = new Schema({
     required: false,
   },
   notifications: {
-    type: [String],
-    default: [],
-  },
-  badges: {
     type: [String],
     default: [],
   },
