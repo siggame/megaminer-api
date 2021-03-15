@@ -67,19 +67,14 @@ export const restifyOptions = {
   prefix: "",
   version: "",
   name: `${name}s`,
-  preCreate: async (req, res, next) => {
-    // Allow admins to specify owners
-    if (!(req.session.userInfo.isAdmin && req.body.owner)) {
-      // By default, set the owner to the one sending the request
-      req.body.owner = req.session.userInfo.id;
+  preMiddleware: async (req, res, next) => {
+    // Block non-admins from using any of these CRUD routes
+    if (!req.session.userInfo.isAdmin) {
+      return res.status(403).json({
+        message: "This operation is restricted to administrators only.",
+      });
     }
 
-    // Admins cannot specify members directly during creation
-    req.body.members = [req.body.owner];
-    next();
-  },
-  postCreate: async (req, res, next) => {
-    logger.info(`Created a new team: ${req.body.name}`);
     next();
   },
 };
