@@ -4,10 +4,12 @@
 
 import { Schema, Document, model } from "mongoose";
 import { validate as validEmail } from "email-validator";
+
 import {
   getHashedPassword,
   getRandomSalt,
   cleanUserData,
+  validPassword,
 } from "../services/passwordService";
 import { logger } from "../utils/logger";
 
@@ -51,6 +53,10 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: true,
+    validate: {
+      validator: validPassword,
+      message: "Invalid password",
+    },
   },
   salt: {
     type: String,
