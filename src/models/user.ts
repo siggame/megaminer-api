@@ -3,7 +3,7 @@
 /* eslint-disable func-names */
 
 import { Schema, Document, model } from "mongoose";
-import { validate } from "email-validator";
+import { validate as validEmail } from "email-validator";
 import {
   getHashedPassword,
   getRandomSalt,
@@ -25,7 +25,7 @@ export interface UserInterface extends Document {
   is_admin: boolean; // Whether this is an administrator (on a need basis)
   mmai_team: string; // This user's competition team, if any
   club_team: string; // This user's main club team, if any (internal developers)
-  notifications: [string]; // An array of notification IDs
+  notifications: [Schema.Types.Mixed]; // An array of notification objects
 }
 
 // Set up the database schema for a User
@@ -43,6 +43,10 @@ const UserSchema = new Schema({
     type: String,
     required: true,
     unique: true,
+    validate: {
+      validator: validEmail,
+      message: "Invalid email address",
+    },
   },
   password: {
     type: String,
@@ -73,7 +77,7 @@ const UserSchema = new Schema({
     required: false,
   },
   notifications: {
-    type: [String],
+    type: [Schema.Types.Mixed],
     default: [],
   },
 });
@@ -82,9 +86,6 @@ const UserSchema = new Schema({
 UserSchema.virtual("id").get(function () {
   return this._id.toString();
 });
-
-// Validate email syntax
-UserSchema.path("email").validate((email: string) => validate(email));
 
 export const User = model<UserInterface>(name, UserSchema);
 
