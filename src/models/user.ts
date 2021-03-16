@@ -93,31 +93,12 @@ export const restifyOptions = {
   prefix: "",
   version: "",
   name: `${name}s`,
-  preCreate: async (req, res, next) => {
-    // Validate and finish populating newly created users
-    req.body.salt = await getRandomSalt();
-    req.body.password = await getHashedPassword(
-      req.body.password,
-      req.body.salt
-    );
-
-    next();
-  },
-  postCreate: async (req, res, next) => {
-    logger.info(`Created a new user: ${req.body.username}`);
-    req.erm.result = cleanUserData(req.erm.result);
-    next();
-  },
-  postRead: async (req, res, next) => {
-    const result = req.erm.result;
-
-    // After fetching user information, remove password information
-    if (Array.isArray(result)) {
-      // If we are listing users, remove each user's password info
-      req.erm.result = result.map((user) => cleanUserData(user));
-    } else {
-      // If we are fetching a single user, remove their password info
-      req.erm.result = cleanUserData(req.erm.result);
+  preMiddleware: async (req, res, next) => {
+    // Block non-admins from using any of these CRUD routes
+    if (!req.session.userInfo.isAdmin) {
+      return res.status(403).json({
+        message: "This operation is restricted to administrators only.",
+      });
     }
 
     next();
