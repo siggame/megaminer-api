@@ -16,6 +16,7 @@ export function handleErrors(
       err.message ||
       "Server error, please open a service ticket if the error persists",
   };
+  logger.error(`Caught status ${err.status}: ${errorResponse}`);
 
   res.status(statusCode).json(errorResponse);
 }
