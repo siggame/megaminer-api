@@ -75,6 +75,6 @@ export const restifyOptions = {
       });
     }
 
-    next();
+    return next();
   },
 };
