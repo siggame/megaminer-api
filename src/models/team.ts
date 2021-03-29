@@ -10,12 +10,11 @@ export const name = "Team";
 // Create an interface for our Team model
 export interface TeamInterface extends Document {
   name: string;
-  tournamentNumber: number; // MMAI-##
   isPaid: boolean;
   isEligible: boolean; // Whether or not the team is eligible to win prizes
-  owner: string; // The user ID of the team owner
-  members: [string]; // An array of team member user IDs
-  activeInvites: [string]; // An array of notification IDs for outgoing invites
+  owner: string; // The username of the team owner
+  members: [string]; // An array of team member usernames
+  activeInvites: [string]; // An array of usernames who have been invited
   createdAt: Date; // When this team was created
   updatedAt: Date; // When this team was last updated
 }
@@ -24,10 +23,6 @@ export const TeamSchema = new Schema({
   name: {
     type: String,
     unique: true,
-    required: true,
-  },
-  tournamentNumber: {
-    type: Number,
     required: true,
   },
   isPaid: {
@@ -72,12 +67,21 @@ export const restifyOptions = {
   prefix: "",
   version: "",
   name: `${name}s`,
+
   preMiddleware: async (req, res, next) => {
-    // Block non-admins from using any of these CRUD routes
-    if (!req.session.userInfo.isAdmin) {
-      return res.status(403).json({
-        message: "This operation is restricted to administrators only.",
-      });
+    // Only restrict updates and deletes
+    if (req.method === "PATCH" || req.method !== "DELETE") {
+      const sessionUser = req.session.userInfo;
+      const teamId = req.params.id;
+      const team = await Team.findById(teamId);
+      res.locals.team = team;
+
+      // Only admins can manipulate teams they do not own
+      if (team.owner !== sessionUser.username && !sessionUser.isAdmin) {
+        return res.status(400).json({
+          message: "Only administrators can manage other teams.",
+        });
+      }
     }
 
     return next();

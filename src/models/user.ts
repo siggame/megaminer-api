@@ -33,6 +33,7 @@ export interface UserInterface extends Document {
   salt: string; // The salt used during password hashing
   createdAt: Date; // When this user was created
   updatedAt: Date; // The last time this user was updated
+  lastLogin: Date; // The last time this user logged in
   isAdmin: boolean; // Whether this is an administrator (on a need-to-have basis)
   clubTeam: string; // This user's main club team, if any (internal developers)
   mmaiTeam: string; // This user's competition team, if any
@@ -71,6 +72,10 @@ const UserSchema = new Schema<UserInterface>({
     type: Date,
     default: Date.now(),
   },
+  lastLogin: {
+    type: Date,
+    default: Date.now(),
+  },
   isAdmin: {
     type: Boolean,
     default: false,
@@ -106,8 +111,8 @@ export const restifyOptions = {
   preMiddleware: async (req, res, next) => {
     // Only restrict non-reads
     if (req.method !== "GET") {
-      const sessionUser = req.session.userInfo;
-      const userId = req.params.id; // can be undefined
+      const sessionUser = req.session.userInfo; // undefined if not logged in
+      const userId = req.params.id; // undefined if POSTing
 
       // Only admins can manipulate users who are not themselves
       if (userId !== sessionUser.id && !sessionUser.isAdmin) {
