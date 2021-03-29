@@ -149,8 +149,8 @@ export class SwaggerSetup {
 
     this.addRouteToSwaggerDoc(`${path}/{id}`, "get", getIdRouteInfo);
 
-    // PUT UPDATE
-    const putRouteInfo: RouteInfo = {
+    // PATCH UPDATE
+    const patchRouteInfo: RouteInfo = {
       "x-swagger-router-controller": model,
       operationId: "update",
       tags: [model],
@@ -180,7 +180,7 @@ export class SwaggerSetup {
       },
     };
 
-    this.addRouteToSwaggerDoc(`${path}/{id}`, "put", putRouteInfo);
+    this.addRouteToSwaggerDoc(`${path}/{id}`, "patch", patchRouteInfo);
 
     // DELETE
     const deleteRouteInfo: RouteInfo = {

@@ -10,7 +10,7 @@ const passwordSchema = new PasswordValidator();
 passwordSchema.is().min(minPasswordLength);
 passwordSchema.is().max(maxPasswordLength);
 // eslint-disable-next-line no-control-regex
-passwordSchema.has(/[\x00-\x7F]/); // ASCII only (to ensure 1 character == 1 byte)
+passwordSchema.has(/[\x00-\x7F]/); // ASCII only (to ensure 55 character == 55 bytes)
 
 const saltRounds = 10;
 
@@ -19,7 +19,10 @@ const saltRounds = 10;
  * @param password - The user's input password.
  * @returns - An array of reasons why the password is invalid. If the array is empty, it is valid.
  */
-export function validPassword(password: string): Array<string> {
+export function validPassword(
+  username: string,
+  password: string
+): Array<string> {
   const result = passwordSchema.validate(password, { list: true });
   const reasons = [];
 
@@ -45,6 +48,11 @@ export function validPassword(password: string): Array<string> {
           reasons.push(param);
       }
     });
+  }
+
+  // Additional check for username and password being the same
+  if (username === password) {
+    reasons.push("Password must not be the same as the username.");
   }
 
   return reasons;

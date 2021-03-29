@@ -10,13 +10,14 @@ export const name = "Team";
 // Create an interface for our Team model
 export interface TeamInterface extends Document {
   name: string;
-  tournament_number: number; // MMAI-##
-  is_paid: boolean;
-  is_eligible: boolean; // Whether or not the team is eligible to win prizes
+  tournamentNumber: number; // MMAI-##
+  isPaid: boolean;
+  isEligible: boolean; // Whether or not the team is eligible to win prizes
   owner: string; // The user ID of the team owner
   members: [string]; // An array of team member user IDs
-  active_invites: [string]; // An array of notification IDs for outgoing invites
-  created_at: Date; // When this team was created
+  activeInvites: [string]; // An array of notification IDs for outgoing invites
+  createdAt: Date; // When this team was created
+  updatedAt: Date; // When this team was last updated
 }
 
 export const TeamSchema = new Schema({
@@ -25,15 +26,15 @@ export const TeamSchema = new Schema({
     unique: true,
     required: true,
   },
-  tournament_number: {
+  tournamentNumber: {
     type: Number,
     required: true,
   },
-  is_paid: {
+  isPaid: {
     type: Boolean,
     default: false,
   },
-  is_eligible: {
+  isEligible: {
     type: Boolean,
     default: false,
   },
@@ -46,11 +47,15 @@ export const TeamSchema = new Schema({
     type: [String],
     required: true,
   },
-  active_invites: {
+  activeInvites: {
     type: [String],
     default: [],
   },
-  created_at: {
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
+  updatedAt: {
     type: Date,
     default: Date.now(),
   },

@@ -41,7 +41,7 @@ app.use(
   cors({
     origin: true,
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     optionsSuccessStatus: 200,
     exposedHeaders: ["Content-Range"],
   })
