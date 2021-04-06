@@ -1,3 +1,122 @@
-.test {
-  color: red;
+/* Blues Color Classes */
+.blue-100 {
+  color: #00396a;
+}
+
+.bg-blue-100 {
+  background-color: #00396a;
+}
+
+.blue-200 {
+  color: #002d93;
+}
+
+.bg-blue-200 {
+  background-color: #002d93;
+}
+
+.blue-300 {
+  color: #006be5;
+}
+
+.bg-blue-300 {
+  background-color: #006be5;
+}
+
+.blue-400 {
+  color: #008bd9;
+}
+
+.bg-blue-400 {
+  background-color: #008bd9;
+}
+
+.blue-500 {
+  color: #00a1ee;
+}
+
+.bg-blue-500 {
+  background-color: #00a1ee;
+}
+
+.blue-600 {
+  color: #27c5ed;
+}
+
+.bg-blue-600 {
+  background-color: #27c5ed;
+}
+
+/* Gray Color Classes */
+.gray-100 {
+  color: #000b22;
+}
+
+.bg-gray-100 {
+  background-color: #000b22;
+}
+
+.gray-200 {
+  color: #001637;
+}
+
+.bg-gray-200 {
+  background-color: #001637;
+}
+
+.gray-300 {
+  color: #002f49;
+}
+
+.bg-gray-300 {
+  background-color: #002f49;
+}
+
+.gray-400 {
+  color: #004b59;
+}
+
+.bg-gray-400 {
+  background-color: #004b59;
+}
+
+.gray-500 {
+  color: #00707a;
+}
+
+.bg-gray-500 {
+  background-color: #00707a;
+}
+
+.gray-600 {
+  color: #52f3fe;
+}
+
+.bg-gray-600 {
+  background-color: #52f3fe;
+}
+
+/* Status Color Classes */
+.red-100 {
+  color: #de2121;
+}
+
+.bg-red-100 {
+  background-color: #de2121;
+}
+
+.yellow-100 {
+  color: #ffff42;
+}
+
+.bg-yellow-100 {
+  background-color: #ffff42;
+}
+
+.green-100 {
+  color: #009129;
+}
+
+.bg-green-100 {
+  background-color: #009129;
 }
