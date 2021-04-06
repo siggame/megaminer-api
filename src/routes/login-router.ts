@@ -36,9 +36,22 @@ async function login(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+/**
+ * Returns information about the current session user, if any.
+ */
+ async function getCurrentUser(req: Request, res: Response, next: NextFunction) {
+  try {
+    const userInfo = req.session.userInfo;
+    return res.status(200).json(userInfo);
+  } catch (err) {
+    return next(err);
+  }
+}
+
 const router = Router();
 
 router.post("/", login);
+router.get("/", getCurrentUser);
 
 export { router };
 
@@ -59,4 +72,14 @@ const loginRouteInfo: RouteInfo = {
   responses: {},
 };
 
+const currentUserRouteInfo: RouteInfo = {
+  "x-swagger-router-controller": "LoginRouter",
+  operationId: "currentUser",
+  tags: ["Login"],
+  description: "Get the current logged in user.",
+  parameters: [],
+  responses: {},
+};
+
 swaggerSetup.addRouteToSwaggerDoc("/login", "post", loginRouteInfo);
+swaggerSetup.addRouteToSwaggerDoc("/login", "get", currentUserRouteInfo);

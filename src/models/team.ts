@@ -69,8 +69,9 @@ export const restifyOptions = {
   name: `${name}s`,
 
   preMiddleware: async (req, res, next) => {
-    // Only restrict updates and deletes
-    if (req.method === "PATCH" || req.method !== "DELETE") {
+    // Restrict updates and deletes to owners or admins only
+    const restrictedMethods = ["PATCH", "DELETE"];
+    if (restrictedMethods.indexOf(req.method) !== -1) {
       const sessionUser = req.session.userInfo;
       const teamId = req.params.id;
       const team = await Team.findById(teamId);
@@ -85,5 +86,52 @@ export const restifyOptions = {
     }
 
     return next();
+  },
+
+  // Run at the start of a POST request
+  preCreate: async (req, res, next) => {
+    const userInfo = req.session.userInfo;
+    const body = req.body;
+
+    // Only admins can create teams for other people
+    if (body.owner !== userInfo.username && !userInfo.isAdmin) {
+      return next({
+        status: 400,
+        message: "Only administrators may create a team for a different user.",
+      });
+    }
+
+    // Ensure the owner is a part of the members list
+    if (body.members.indexOf(body.owner) === -1) {
+      return next({
+        status: 400,
+        message: "The owner of a team must be within the members list.",
+      });
+    }
+
+    // Only admins can set members upon team creation
+    if (body.members !== [body.owner] && !userInfo.isAdmin) {
+      return next({
+        status: 400,
+        message:
+          "Only administrators may create teams with additional members.",
+      });
+    }
+
+    // Only admins can set active invites upon team creation
+    if (body.activeInvites.length !== 0 && !userInfo.isAdmin) {
+      return next({
+        status: 400,
+        message: "Only administrators may create teams with active invites.",
+      });
+    }
+
+    // Only admins can set isPaid and isEligible to true
+    if ((body.isPaid || body.isEligible) && !userInfo.isAdmin) {
+      return next({
+        status: 400,
+        message: "Only administrators may set team eligibility or paid status.",
+      });
+    }
   },
 };
