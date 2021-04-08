@@ -3,8 +3,6 @@
 
 import { Schema, Document, model } from "mongoose";
 
-import { logger } from "../utils/logger";
-
 export const name = "Team";
 
 // Create an interface for our Team model

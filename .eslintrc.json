@@ -15,7 +15,8 @@
     "import"
   ],
   "env": {
-    "node": true
+    "node": true,
+    "mocha": true
   },
   "rules": {
     "prettier/prettier": "error",

@@ -236,4 +236,12 @@ export class RouteInfo {
   }
 }
 
+export interface RouteConfig {
+  method: string;
+
+  route: string;
+
+  options: RouteInfo;
+}
+
 export const swaggerSetup = new SwaggerSetup();

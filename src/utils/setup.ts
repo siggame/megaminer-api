@@ -13,3 +13,10 @@ export async function setupApplication() {
     useUnifiedTopology: true,
   });
 }
+
+/**
+ * Run any functions required to tear down the application after stopping the server.
+ */
+export async function teardownApplication() {
+  mongoose.disconnect();
+}

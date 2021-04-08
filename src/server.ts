@@ -1,29 +1,60 @@
-import { setupApplication } from "./utils/setup";
+/* eslint-disable func-names */
+
+import { Server } from "http";
+import { setupApplication, teardownApplication } from "./utils/setup";
 import { properties } from "./utils/properties";
 import { logger } from "./utils/logger";
-import { app } from "./routes/index";
+import { app, initRoutes } from "./api/index";
 
-// Setup the application before starting the server
-const setupPromise = setupApplication();
+class ServerAPI {
+  public server: Server;
 
-setupPromise
-  .then(() => {
-    // Start the application server
-    const server = app.listen(properties.server.port);
+  public listening: Promise<null>;
 
-    server.on("listening", () => {
-      logger.info(`Listening on port ${properties.server.port}.`);
+  public async start(configsFolder: string) {
+    // Import configs and configure app
+    properties.init(configsFolder);
+    initRoutes();
+
+    // Hack to allow us to wait on server listening
+    let resolveListening: Function;
+    this.listening = new Promise<null>((resolve, reject) => {
+      resolveListening = resolve;
     });
 
-    server.on("error", (error) => {
-      logger.error(`Error starting server: ${error.message}`);
+    // Perform any pre-flight tasks required to start the server
+    const self = this;
+    await setupApplication()
+      .then(() => {
+        // Start the application server
+        self.server = app.listen(properties.server.port);
 
-      server.close(() => {
+        self.server.on("listening", () => {
+          logger.info(`Listening on port ${properties.server.port}.`);
+          resolveListening();
+        });
+
+        self.server.on("close", () => {
+          teardownApplication();
+        });
+
+        self.server.on("error", (error: any) => {
+          logger.error(`Error running server: ${error.message}`);
+
+          self.server.close(() => {
+            process.exit(1);
+          });
+        });
+      })
+      .catch((err) => {
+        logger.error(`Failed to set up the application: ${err}`);
         process.exit(1);
       });
-    });
-  })
-  .catch((err) => {
-    logger.error(`Failed to set up the application: ${err}`);
-    process.exit(1);
-  });
+  }
+
+  public stop() {
+    this.server.close();
+  }
+}
+
+export const api = new ServerAPI();

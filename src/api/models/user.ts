@@ -10,8 +10,8 @@ import {
   getRandomSalt,
   cleanUserData,
   validPassword,
-} from "../services/passwordService";
-import { logger } from "../utils/logger";
+} from "../../services/passwordService";
+import { logger } from "../../utils/logger";
 
 export const name = "User";
 

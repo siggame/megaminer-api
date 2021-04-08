@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { RouteInfo, swaggerSetup } from "../services/swaggerService";
-import { projectPackage } from "../utils/package";
+import { RouteInfo, swaggerSetup } from "../../services/swaggerService";
+import { projectPackage } from "../../utils/package";
 
 /**
  * Returns information about this application.
@@ -25,14 +25,3 @@ const router = Router();
 router.get("/", getInfo);
 
 export { router };
-
-const infoRouteInfo: RouteInfo = {
-  "x-swagger-router-controller": "InfoRouter",
-  operationId: "info",
-  tags: ["Info"],
-  description: "Get application information.",
-  parameters: [],
-  responses: {},
-};
-
-swaggerSetup.addRouteToSwaggerDoc("/info", "get", infoRouteInfo);

@@ -4,12 +4,14 @@
  * - gulp compile: compile code in preparation for deployment
  * - gulp server: compile and run a new application server
  * - gulp watch: compile code and start the node process while watching for code changes so it can re-compile as needed
+ * - gulp test: compile the code, start the server, and run automated tests
  * - gulp: compile code in preparation for deployment
  */
 
 const gulp = require('gulp');
 const ts = require('gulp-typescript');
 const clean = require('gulp-clean');
+const mocha = require('gulp-mocha');
 
 const spawn = require('child_process').spawn;
 const tsProject = ts.createProject('tsconfig.json');
@@ -51,7 +53,7 @@ function serverTask(callback) {
   }
 
   // Spawn a new node ChildProcess running the release server
-  node = spawn('node', ['release/server.js'], { stdio: 'inherit' });
+  node = spawn('node', ['main.js'], { stdio: 'inherit' });
 
   // Log errors on close
   node.on('close', (statusCode) => {
@@ -66,10 +68,21 @@ function serverTask(callback) {
 }
 
 /**
+ * Run automated mocha tests.
+ */
+ function testTask() {
+  // Run mocha tests
+  return gulp
+    .src("./tests/main.js", { read: false })
+    .pipe(mocha({ reporter: "spec", exit: true, bail: true }))
+    .once("error", (_err) => {});
+}
+
+/**
  * Re-run gulp server when changes in source code are detected.
  */
 function watchTask() {
-  gulp.watch('./src/**/*.ts', gulp.series('server'));
+  gulp.watch(["./src/**/*.ts", "./configs/**/*", "./main.js"], gulp.series("server"));
 }
 
 /* Export functions for gulp to run as tasks. */
@@ -82,6 +95,9 @@ exports.compile = gulp.series(exports.clean, compileTask);
 
 // gulp server
 exports.server = gulp.series(exports.compile, serverTask);
+
+// gulp test
+exports.test = gulp.series(exports.compile, testTask);
 
 // gulp watch
 exports.watch = gulp.series(exports.server, watchTask);

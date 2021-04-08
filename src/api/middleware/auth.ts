@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { getUserInfo } from "../services/userService";
+import { getUserInfo } from "../../services/userService";
 
 /**
  * Authenticate any user trying to use the application.

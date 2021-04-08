@@ -1,4 +1,4 @@
-const configsPath = "../../configs";
+const configsPath = "../..";
 
 /**
  * Properties stores data from the application config files.
@@ -8,9 +8,12 @@ class Properties {
 
   database: any;
 
-  constructor() {
-    this.server = require(`${configsPath}/serverConfig.json`);
-    this.database = require(`${configsPath}/databaseConfig.json`);
+  /**
+   * Fetch and store all data from config files.
+   */
+  init(configsFolder: string) {
+    this.server = require(`${configsPath}/${configsFolder}/serverConfig.json`);
+    this.database = require(`${configsPath}/${configsFolder}/databaseConfig.json`);
   }
 }
 
