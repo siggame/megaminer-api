@@ -131,5 +131,7 @@ export const restifyOptions = {
         message: "Only administrators may set team eligibility or paid status.",
       });
     }
+
+    return next();
   },
 };
