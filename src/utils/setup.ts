@@ -8,6 +8,7 @@ import { properties } from "./properties";
  */
 export async function setupApplication() {
   mongoose.set("useCreateIndex", true);
+
   const mongooseOptions = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -21,6 +22,12 @@ export async function setupApplication() {
         logger.error("Failed to connect to database, retrying in 5 seconds...");
         setTimeout(persistentConnect, 5000);
       });
+
+  persistentConnect();
+
+  mongoose.connection.on("error", (err) => {
+    logger.error(err);
+  })
 }
 
 /**
