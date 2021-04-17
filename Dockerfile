@@ -12,6 +12,7 @@ FROM node:12
 ENV NODE_ENV=production
 WORKDIR /usr/app
 COPY package*.json main.js ./
+COPY configs configs/
 RUN npm ci
 COPY --from=builder /usr/app/release/ release/
 EXPOSE 3000
