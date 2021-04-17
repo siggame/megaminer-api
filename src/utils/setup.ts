@@ -1,4 +1,5 @@
 import * as mongoose from "mongoose";
+import { logger } from "./logger";
 
 import { properties } from "./properties";
 
@@ -7,11 +8,19 @@ import { properties } from "./properties";
  */
 export async function setupApplication() {
   mongoose.set("useCreateIndex", true);
-
-  await mongoose.connect(properties.database.mongoUri, {
+  const mongooseOptions = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-  });
+  };
+
+  const persistentConnect = () =>
+    mongoose
+      .connect(properties.database.mongoUri, mongooseOptions)
+      .catch((err) => {
+        logger.error(err);
+        logger.error("Failed to connect to database, retrying in 5 seconds...");
+        setTimeout(persistentConnect, 5000);
+      });
 }
 
 /**
